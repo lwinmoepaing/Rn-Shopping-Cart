@@ -1,22 +1,51 @@
 import React from 'react'
-import { View, Text, Image, Button, StyleSheet } from 'react-native'
+import {
+	View,
+	Text,
+	Image,
+	Button,
+	StyleSheet,
+	TouchableOpacity,
+	TouchableNativeFeedback,
+	Platform,
+} from 'react-native'
 import Color from '../../constants/Color'
 
-const ProductItem = ({ product }) => {
+const ProductItem = (props) => {
+	const Touchable =
+		Platform.OS === 'android' && Platform.Version >= 21
+			? TouchableNativeFeedback
+			: TouchableOpacity
+	const { product } = props
+
 	return (
 		<View style={styles.product}>
-			<View style={styles.imageContainer}>
-				<Image style={styles.image} source={{ uri: product.imageUrl }} />
-			</View>
+			<View style={styles.touchable}>
+				<Touchable onPress={props.onViewDetail} useForeground>
+					<View>
+						<View style={styles.imageContainer}>
+							<Image style={styles.image} source={{ uri: product.imageUrl }} />
+						</View>
 
-			<View style={styles.detailText}>
-				<Text style={styles.title}> {product.title} </Text>
-				<Text style={styles.price}> ${product.price.toFixed(2)} </Text>
-			</View>
+						<View style={styles.detailText}>
+							<Text style={styles.title}> {product.title} </Text>
+							<Text style={styles.price}> ${product.price.toFixed(2)} </Text>
+						</View>
 
-			<View style={styles.action}>
-				<Button color={Color.primary} title="View Detail" />
-				<Button color={Color.primary} title="To Cart" />
+						<View style={styles.action}>
+							<Button
+								color={Color.primary}
+								title="View Detail"
+								onPress={props.onViewDetail}
+							/>
+							<Button
+								color={Color.primary}
+								title="To Cart"
+								onPress={props.onAddToCart}
+							/>
+						</View>
+					</View>
+				</Touchable>
 			</View>
 		</View>
 	)
@@ -63,6 +92,10 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		height: '25%',
 		paddingHorizontal: 20,
+	},
+	touchable: {
+		borderRadius: 10,
+		overflow: 'hidden',
 	},
 })
 

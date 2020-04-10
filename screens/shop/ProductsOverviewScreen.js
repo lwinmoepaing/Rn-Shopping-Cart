@@ -5,7 +5,6 @@ import ProductItem from '../../components/shop/ProductItem'
 
 const ProductOverview = ({ navigation }) => {
 	const products = useSelector((state) => state.products.products)
-	// console.log('Products', products)
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
@@ -19,7 +18,12 @@ const ProductOverview = ({ navigation }) => {
 			renderItem={({ item }) => (
 				<ProductItem
 					product={item}
-					onViewDetail={() => {}}
+					onViewDetail={() => {
+						navigation.navigate('ProductDetail', {
+							id: item.id,
+							title: item.title,
+						})
+					}}
 					onAddToCart={() => {}}
 				/>
 			)}

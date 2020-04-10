@@ -2,7 +2,7 @@ import products from '../../data/dummy-data'
 
 const initialState = {
 	products,
-	availableProducts: products.filter((product) => product.ownerId === 'u1'),
+	availableProducts: products,
 }
 
 // console.log('reducer')
