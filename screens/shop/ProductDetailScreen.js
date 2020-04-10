@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Text, View, Image, ScrollView, StyleSheet } from 'react-native'
+import { Text, View, Image, ScrollView, StyleSheet, Button } from 'react-native'
+import Color from '../../constants/Color'
 
 const ProductDetail = ({ navigation, route }) => {
 	const { id, title } = route.params
@@ -15,12 +16,33 @@ const ProductDetail = ({ navigation, route }) => {
 	}, [navigation])
 
 	return (
-		<View>
-			<Text> Product Detail {product.id} </Text>
-		</View>
+		<ScrollView>
+			<Image style={styles.image} source={{ uri: product.imageUrl }} />
+			<Button color={Color.primary} title="Add to Cart" onPress={() => {}} />
+			<Text style={styles.price}> ${product.price.toFixed(2)} </Text>
+			<Text style={styles.description}> ${product.description} </Text>
+		</ScrollView>
 	)
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+	image: {
+		width: '100%',
+		height: 300,
+	},
+	price: {
+		fontSize: 20,
+		color: '#888888',
+		textAlign: 'center',
+		marginVertical: 20,
+		fontFamily: 'salbo-regular',
+	},
+	description: {
+		fontSize: 14,
+		textAlign: 'center',
+		marginHorizontal: 20,
+		fontFamily: 'pt-sans',
+	},
+})
 
 export default ProductDetail

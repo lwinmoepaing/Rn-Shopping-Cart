@@ -17,6 +17,9 @@ const defaultNavigationOptions = {
 		backgroundColor: Platform.OS === 'android' ? Color.primary : '',
 	},
 	headerTintColor: Platform.OS === 'android' ? 'white' : Color.primary,
+	headerTitleStyle: {
+		fontFamily: 'pt-sans',
+	},
 }
 
 export default () => (
