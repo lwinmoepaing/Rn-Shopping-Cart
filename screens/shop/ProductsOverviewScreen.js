@@ -1,11 +1,25 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { useSelector } from 'react-redux'
+import { View, Text, FlatList } from 'react-native'
 
-const ProductOverview = () => {
+const TitleText = ({ item }) => <Text> {item.title} </Text>
+
+const ProductOverview = ({ navigation }) => {
+	const products = useSelector((state) => state.products.products)
+	// console.log('Products', products)
+
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerTitle: 'All Products',
+		})
+	}, [navigation])
+
 	return (
-		<View>
-			<Text> Product Over View Screen </Text>
-		</View>
+		<FlatList
+			data={products}
+			renderItem={TitleText}
+			keyExtractor={(item) => item.id}
+		/>
 	)
 }
 

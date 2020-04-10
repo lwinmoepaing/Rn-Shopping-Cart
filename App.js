@@ -3,6 +3,9 @@ import { StyleSheet, Text, View } from 'react-native'
 import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 
+// Navigatior
+import ShopNavigator from './navigation/ShopNavigator'
+
 // Reducers
 import productReducer from './store/reducer/product'
 
@@ -16,9 +19,7 @@ const store = createStore(rootReducer)
 export default function App() {
 	return (
 		<Provider store={store}>
-			<View style={styles.container}>
-				<Text>Open up App.js to start working on your app!</Text>
-			</View>
+			<ShopNavigator />
 		</Provider>
 	)
 }
