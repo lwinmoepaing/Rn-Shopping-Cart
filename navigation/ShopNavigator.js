@@ -9,6 +9,7 @@ import Color from '../constants/Color'
 // Screens
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen'
 import ProductDetailScreen from '../screens/shop/ProductDetailScreen'
+import CartScreen from '../screens/shop/CartScreen'
 
 const Stack = createStackNavigator()
 // Each Screen Options
@@ -27,6 +28,7 @@ export default () => (
 		<Stack.Navigator screenOptions={defaultNavigationOptions}>
 			<Stack.Screen name="ProductOverview" component={ProductsOverviewScreen} />
 			<Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
+			<Stack.Screen name="Cart" component={CartScreen} />
 		</Stack.Navigator>
 	</NavigationContainer>
 )

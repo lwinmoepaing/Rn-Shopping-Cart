@@ -6,7 +6,7 @@ import Color from '../../constants/Color'
 // Action
 import * as cartAction from '../../store/action/cart'
 
-const ProductDetail = ({ navigation, route }) => {
+const ProductDetailScreen = ({ navigation, route }) => {
 	const dispatch = useDispatch()
 	const { id, title } = route.params
 	const product = useSelector((state) =>
@@ -55,4 +55,4 @@ const styles = StyleSheet.create({
 	},
 })
 
-export default ProductDetail
+export default ProductDetailScreen

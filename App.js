@@ -16,7 +16,7 @@ import cartReducer from './store/reducer/cart'
 // Redux And Reducer
 const rootReducer = combineReducers({
 	products: productReducer,
-	carts: cartReducer,
+	cart: cartReducer,
 })
 
 const store = createStore(rootReducer, composeWithDevTools())
