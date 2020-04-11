@@ -1,10 +1,15 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { FlatList } from 'react-native'
 import ProductItem from '../../components/shop/ProductItem'
 
+// Action
+import * as cartAction from '../../store/action/cart'
+
 const ProductOverview = ({ navigation }) => {
 	const products = useSelector((state) => state.products.products)
+
+	const dispatch = useDispatch()
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
@@ -24,7 +29,9 @@ const ProductOverview = ({ navigation }) => {
 							title: item.title,
 						})
 					}}
-					onAddToCart={() => {}}
+					onAddToCart={() => {
+						dispatch(cartAction.addToCart(item))
+					}}
 				/>
 			)}
 			keyExtractor={(item) => item.id}

@@ -1,9 +1,13 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { Text, View, Image, ScrollView, StyleSheet, Button } from 'react-native'
+import { useSelector, useDispatch } from 'react-redux'
+import { Text, Image, ScrollView, StyleSheet, Button } from 'react-native'
 import Color from '../../constants/Color'
 
+// Action
+import * as cartAction from '../../store/action/cart'
+
 const ProductDetail = ({ navigation, route }) => {
+	const dispatch = useDispatch()
 	const { id, title } = route.params
 	const product = useSelector((state) =>
 		state.products.availableProducts.find((product) => product.id === id)
@@ -18,7 +22,13 @@ const ProductDetail = ({ navigation, route }) => {
 	return (
 		<ScrollView>
 			<Image style={styles.image} source={{ uri: product.imageUrl }} />
-			<Button color={Color.primary} title="Add to Cart" onPress={() => {}} />
+			<Button
+				color={Color.primary}
+				title="Add to Cart"
+				onPress={() => {
+					dispatch(cartAction.addToCart(product))
+				}}
+			/>
 			<Text style={styles.price}> ${product.price.toFixed(2)} </Text>
 			<Text style={styles.description}> ${product.description} </Text>
 		</ScrollView>
