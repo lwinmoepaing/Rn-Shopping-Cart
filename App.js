@@ -12,11 +12,13 @@ import ShopNavigator from './navigation/ShopNavigator'
 // Reducers
 import productReducer from './store/reducer/product'
 import cartReducer from './store/reducer/cart'
+import orderReducer from './store/reducer/order'
 
 // Redux And Reducer
 const rootReducer = combineReducers({
 	products: productReducer,
 	cart: cartReducer,
+	orders: orderReducer,
 })
 
 const store = createStore(rootReducer, composeWithDevTools())
