@@ -8,7 +8,13 @@ import CartItem from '../../components/shop/CartItem'
 import * as cartAction from '../../store/action/cart'
 import * as orderAction from '../../store/action/order'
 
-const CartScreen = () => {
+const CartScreen = ({ navigation }) => {
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerTitle: 'Your Cart',
+		})
+	}, [navigation])
+
 	const dispatch = useDispatch()
 	const cartTotalAmount = useSelector((state) => state.cart.totalAmount)
 	const cartItems = useSelector((state) => {

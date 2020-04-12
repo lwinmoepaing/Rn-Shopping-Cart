@@ -4,6 +4,7 @@ import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
+import { Ionicons } from '@expo/vector-icons'
 
 // Themes
 import Color from '../constants/Color'
@@ -19,7 +20,7 @@ const Drawer = createDrawerNavigator()
 // Each Screen Options
 const defaultNavigationOptions = {
 	headerStyle: {
-		backgroundColor: Platform.OS === 'android' ? Color.primary : '',
+		backgroundColor: Platform.OS === 'android' ? Color.primary : 'white',
 	},
 	headerTintColor: Platform.OS === 'android' ? 'white' : Color.primary,
 	headerTitleStyle: {
@@ -41,11 +42,44 @@ const OrderNavigator = () => (
 	</Stack.Navigator>
 )
 
+// Drawer Options
+const drawerContentOptions = {
+	activeTintColor: Color.primary,
+}
+
+const productDrawerConfig = {
+	drawerIcon: (config) => (
+		<Ionicons
+			name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+			size={23}
+			color={config.focused ? Color.primary : config.color}
+		/>
+	),
+}
+
+const orderDrawerConfig = {
+	drawerIcon: (config) => (
+		<Ionicons
+			name={Platform.OS === 'android' ? 'md-list' : 'ios-list'}
+			size={23}
+			color={config.focused ? Color.primary : config.color}
+		/>
+	),
+}
+
 export default () => (
 	<NavigationContainer>
-		<Drawer.Navigator>
-			<Drawer.Screen name="Product" component={ProductNavigator} />
-			<Drawer.Screen name="Orders" component={OrderNavigator} />
+		<Drawer.Navigator drawerContentOptions={drawerContentOptions}>
+			<Drawer.Screen
+				name="Product"
+				component={ProductNavigator}
+				options={productDrawerConfig}
+			/>
+			<Drawer.Screen
+				name="Orders"
+				component={OrderNavigator}
+				options={orderDrawerConfig}
+			/>
 		</Drawer.Navigator>
 	</NavigationContainer>
 )
