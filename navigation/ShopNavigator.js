@@ -13,6 +13,7 @@ import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen'
 import ProductDetailScreen from '../screens/shop/ProductDetailScreen'
 import CartScreen from '../screens/shop/CartScreen'
 import OrderScreen from '../screens/shop/OrderScreen'
+import UserProductScreen from '../screens/user/UserProductsScreen'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -28,6 +29,7 @@ const defaultNavigationOptions = {
 	},
 }
 
+// Stack Navigators
 const ProductNavigator = () => (
 	<Stack.Navigator screenOptions={defaultNavigationOptions}>
 		<Stack.Screen name="ProductOverview" component={ProductsOverviewScreen} />
@@ -42,7 +44,13 @@ const OrderNavigator = () => (
 	</Stack.Navigator>
 )
 
-// Drawer Options
+const AdminNavigator = () => (
+	<Stack.Navigator screenOptions={defaultNavigationOptions}>
+		<Stack.Screen name="User" component={UserProductScreen} />
+	</Stack.Navigator>
+)
+
+// Drawer Options And Configs
 const drawerContentOptions = {
 	activeTintColor: Color.primary,
 }
@@ -67,6 +75,17 @@ const orderDrawerConfig = {
 	),
 }
 
+const adminDrawerConfig = {
+	drawerIcon: (config) => (
+		<Ionicons
+			name={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
+			size={23}
+			color={config.focused ? Color.primary : config.color}
+		/>
+	),
+}
+
+// Drawer Navigator
 export default () => (
 	<NavigationContainer>
 		<Drawer.Navigator drawerContentOptions={drawerContentOptions}>
@@ -79,6 +98,11 @@ export default () => (
 				name="Orders"
 				component={OrderNavigator}
 				options={orderDrawerConfig}
+			/>
+			<Drawer.Screen
+				name="Admin"
+				component={AdminNavigator}
+				options={adminDrawerConfig}
 			/>
 		</Drawer.Navigator>
 	</NavigationContainer>
