@@ -24,18 +24,37 @@ const UserProductScreen = ({ navigation }) => {
 					/>
 				</HeaderButtons>
 			),
+			headerRight: () => (
+				<HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+					<Item
+						title="Menu"
+						onPress={() => navigation.navigate('EditProduct')}
+						iconName={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
+					/>
+				</HeaderButtons>
+			),
 		})
 	}, [navigation])
 
 	const userProducts = useSelector((state) => state.products.userProducts)
+
+	const toEditScreen = (id) => {
+		navigation.navigate('EditProduct', {
+			productId: id,
+		})
+	}
 
 	return (
 		<FlatList
 			data={userProducts}
 			keyExtractor={(item) => item.id}
 			renderItem={({ item }) => (
-				<ProductItem product={item} onSelect={() => {}}>
-					<Button color={Color.primary} title="Edit" onPress={() => {}} />
+				<ProductItem product={item} onSelect={() => toEditScreen(item.id)}>
+					<Button
+						color={Color.primary}
+						title="Edit"
+						onPress={() => toEditScreen(item.id)}
+					/>
 					<Button color={Color.primary} title="Delete" onPress={() => {}} />
 				</ProductItem>
 			)}

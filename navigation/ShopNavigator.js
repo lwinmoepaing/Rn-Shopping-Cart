@@ -14,6 +14,7 @@ import ProductDetailScreen from '../screens/shop/ProductDetailScreen'
 import CartScreen from '../screens/shop/CartScreen'
 import OrderScreen from '../screens/shop/OrderScreen'
 import UserProductScreen from '../screens/user/UserProductsScreen'
+import EditProductScreen from '../screens/user/EditProductScreen'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -46,7 +47,8 @@ const OrderNavigator = () => (
 
 const AdminNavigator = () => (
 	<Stack.Navigator screenOptions={defaultNavigationOptions}>
-		<Stack.Screen name="User" component={UserProductScreen} />
+		<Stack.Screen name="UserProducts" component={UserProductScreen} />
+		<Stack.Screen name="EditProduct" component={EditProductScreen} />
 	</Stack.Navigator>
 )
 
