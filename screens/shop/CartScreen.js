@@ -58,6 +58,7 @@ const CartScreen = ({ navigation }) => {
 						onRemoveCart={() =>
 							dispatch(cartAction.removeFromCart(item.productId))
 						}
+						deletable
 					/>
 				)}
 			/>
