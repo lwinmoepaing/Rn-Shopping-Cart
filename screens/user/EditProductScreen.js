@@ -37,6 +37,7 @@ const EditProductScreen = ({ navigation, route }) => {
 		editProduct ? editProduct.description : ''
 	)
 
+	// New Create Product / Edit Existing Product
 	const newOrEditProduct = React.useCallback(() => {
 		if (editProduct) {
 			dispatch(
@@ -104,8 +105,6 @@ const EditProductScreen = ({ navigation, route }) => {
 						style={styles.input}
 					/>
 				</View>
-
-				<Button title="onClick" onPress={newOrEditProduct} />
 			</View>
 		</ScrollView>
 	)
