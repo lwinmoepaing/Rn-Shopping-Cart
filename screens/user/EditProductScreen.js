@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import {
 	View,
 	Text,
@@ -8,12 +8,19 @@ import {
 	ScrollView,
 	TextInput,
 	Platform,
+	Button,
 } from 'react-native'
+
+// Actions
+import * as productActions from '../../store/action/product'
 
 // Components
 import CustomHeader from '../../components/UI/HeaderButton'
 
 const EditProductScreen = ({ navigation, route }) => {
+	// Initial
+	const dispatch = useDispatch()
+
 	// Props
 	const productId = route.params?.productId
 	const editProduct = useSelector((state) =>
@@ -22,11 +29,25 @@ const EditProductScreen = ({ navigation, route }) => {
 
 	// State Dependencies
 	const [title, setTitle] = useState(editProduct ? editProduct.title : '')
+	const [price, setPrice] = useState(editProduct ? editProduct.price : '')
 	const [imageUrl, setImageUrl] = useState(
 		editProduct ? editProduct.imageUrl : ''
 	)
-	const [price, setPrice] = useState(editProduct ? editProduct.price : '')
-	const [description, setDescription] = useState('')
+	const [description, setDescription] = useState(
+		editProduct ? editProduct.description : ''
+	)
+
+	const newOrEditProduct = React.useCallback(() => {
+		if (editProduct) {
+			dispatch(
+				productActions.updateProduct(productId, title, description, imageUrl)
+			)
+		} else {
+			dispatch(
+				productActions.createProduct(title, description, imageUrl, +price)
+			)
+		}
+	}, [productId, title, description, imageUrl, price])
 
 	// Set Navigation
 	React.useLayoutEffect(() => {
@@ -39,15 +60,12 @@ const EditProductScreen = ({ navigation, route }) => {
 						iconName={
 							Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'
 						}
-						onPress={() => {
-							console.log('title', title)
-							console.log('imageUrl', imageUrl)
-						}}
+						onPress={newOrEditProduct}
 					/>
 				</HeaderButtons>
 			),
 		})
-	}, [navigation])
+	}, [navigation, productId, title, description, imageUrl, price])
 
 	return (
 		<ScrollView>
@@ -56,7 +74,7 @@ const EditProductScreen = ({ navigation, route }) => {
 					<Text style={styles.label}> Title </Text>
 					<TextInput
 						value={title}
-						onChange={(val) => setTitle(val)}
+						onChangeText={(val) => setTitle(val)}
 						style={styles.input}
 					/>
 				</View>
@@ -64,7 +82,7 @@ const EditProductScreen = ({ navigation, route }) => {
 					<Text style={styles.label}> Image Url </Text>
 					<TextInput
 						value={imageUrl}
-						onChange={(val) => setImageUrl(val)}
+						onChangeText={(val) => setImageUrl(val)}
 						style={styles.input}
 					/>
 				</View>
@@ -73,7 +91,7 @@ const EditProductScreen = ({ navigation, route }) => {
 						<Text style={styles.label}> Price </Text>
 						<TextInput
 							value={price}
-							onChange={(val) => setPrice(val)}
+							onChangeText={(val) => setPrice(val)}
 							style={styles.input}
 						/>
 					</View>
@@ -82,10 +100,12 @@ const EditProductScreen = ({ navigation, route }) => {
 					<Text style={styles.label}> Description </Text>
 					<TextInput
 						value={description}
-						onChange={(val) => setDescription(val)}
+						onChangeText={(val) => setDescription(val)}
 						style={styles.input}
 					/>
 				</View>
+
+				<Button title="onClick" onPress={newOrEditProduct} />
 			</View>
 		</ScrollView>
 	)
