@@ -14,24 +14,6 @@ import {
 import CustomHeader from '../../components/UI/HeaderButton'
 
 const EditProductScreen = ({ navigation, route }) => {
-	// Set Navigation
-	React.useLayoutEffect(() => {
-		navigation.setOptions({
-			headerTitle: 'Edit Product',
-			headerRight: () => (
-				<HeaderButtons HeaderButtonComponent={CustomHeader}>
-					<Item
-						title="CheckMark"
-						iconName={
-							Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'
-						}
-						onPress={() => {}}
-					/>
-				</HeaderButtons>
-			),
-		})
-	}, [navigation])
-
 	// Props
 	const productId = route.params?.productId
 	const editProduct = useSelector((state) =>
@@ -45,6 +27,27 @@ const EditProductScreen = ({ navigation, route }) => {
 	)
 	const [price, setPrice] = useState(editProduct ? editProduct.price : '')
 	const [description, setDescription] = useState('')
+
+	// Set Navigation
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerTitle: 'Edit Product',
+			headerRight: () => (
+				<HeaderButtons HeaderButtonComponent={CustomHeader}>
+					<Item
+						title="CheckMark"
+						iconName={
+							Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'
+						}
+						onPress={() => {
+							console.log('title', title)
+							console.log('imageUrl', imageUrl)
+						}}
+					/>
+				</HeaderButtons>
+			),
+		})
+	}, [navigation])
 
 	return (
 		<ScrollView>

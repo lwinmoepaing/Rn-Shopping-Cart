@@ -1,6 +1,7 @@
 import Cart from '../../models/cart-item'
 import { ADD_TO_CART, REMOVE_FROM_CART } from '../action/cart'
 import { ADD_ORDER } from '../action/order'
+import { DELETE_PRODUCT } from '../action/product'
 
 const initialState = {
 	items: {},
@@ -62,7 +63,23 @@ export default (state = initialState, action) => {
 				totalAmount: state.totalAmount - selectedItem.productPrice,
 			}
 
+		case DELETE_PRODUCT:
+			// If delete product doesn't exist in Cart
+			if (!state.items[action.pid]) {
+				return state
+			}
+
+			const updatedItems = { ...state.items }
+			const deletedItemPrice = state.items[action.pid].sum
+			delete updatedItems[action.pid]
+
+			return {
+				...state,
+				items: updatedItems,
+				totalAmount: state.totalAmount - deletedItemPrice,
+			}
 		case ADD_ORDER:
+			// When User Order Click, Item inside Cart'll be Empty
 			return initialState
 		default:
 			return state
