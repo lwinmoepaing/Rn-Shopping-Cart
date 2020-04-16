@@ -42,9 +42,18 @@ const ProductOverviewScreen = ({ navigation }) => {
 		setLoading(false)
 	}, [dispatch, setLoading, setError])
 
+	// WillFocus
+	useEffect(() => {
+		const willFocus = navigation.addListener('focus', loadProduct)
+		return () => {
+			willFocus.remove()
+		}
+	}, [navigation, loadProduct])
+
 	// Initial Fetching
 	useEffect(() => {
 		loadProduct()
+		console.log('Loading')
 	}, [dispatch, loadProduct])
 
 	// Navigation Setup

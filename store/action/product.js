@@ -73,20 +73,49 @@ export const createProduct = (title, description, imageUrl, price) => {
 }
 
 export const updateProduct = (id, title, description, imageUrl) => {
-	return {
-		type: UPDATE_PRODUCT,
-		pid: id,
-		productData: {
+	return async (dispatch) => {
+		const body = {
 			title,
 			description,
 			imageUrl,
-		},
+		}
+
+		try {
+			await fetch(`${URL}/products/${id}.json`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(body),
+			})
+		} catch (e) {
+			console.error(e)
+		}
+
+		dispatch({
+			type: UPDATE_PRODUCT,
+			pid: id,
+			productData: body,
+		})
 	}
 }
 
 export const deleteProduct = (productId) => {
-	return {
-		type: DELETE_PRODUCT,
-		pid: productId,
+	return async (dispatch) => {
+		try {
+			await fetch(`${URL}/products/${productId}.json`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+		} catch (e) {
+			console.error(e)
+		}
+
+		dispatch({
+			type: DELETE_PRODUCT,
+			pid: productId,
+		})
 	}
 }

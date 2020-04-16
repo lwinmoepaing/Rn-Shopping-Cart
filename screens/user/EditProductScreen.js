@@ -118,6 +118,8 @@ const EditProductScreen = ({ navigation, route }) => {
 				)
 			)
 		}
+
+		navigation.goBack()
 	}, [productId, dispatch, formState])
 
 	// Set Navigation
