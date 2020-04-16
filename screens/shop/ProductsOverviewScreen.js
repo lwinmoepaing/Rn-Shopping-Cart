@@ -1,6 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FlatList, Platform, Button } from 'react-native'
+import {
+	FlatList,
+	Platform,
+	Button,
+	View,
+	ActivityIndicator,
+	StyleSheet,
+	Text,
+	RefreshControl,
+} from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
 // Theme
@@ -12,11 +21,31 @@ import CustomHeaderButton from '../../components/UI/HeaderButton'
 
 // Action
 import * as cartAction from '../../store/action/cart'
+import * as productActions from '../../store/action/product'
 
 const ProductOverviewScreen = ({ navigation }) => {
+	const [isLoading, setLoading] = useState(true)
+	const [isError, setError] = useState(null)
+
 	const products = useSelector((state) => state.products.availableProducts)
 
 	const dispatch = useDispatch()
+
+	const loadProduct = useCallback(async () => {
+		setLoading(true)
+		setError(null)
+		try {
+			await dispatch(productActions.setProduct())
+		} catch (e) {
+			setError(e.message)
+		}
+		setLoading(false)
+	}, [dispatch, setLoading, setError])
+
+	// Initial Fetching
+	useEffect(() => {
+		loadProduct()
+	}, [dispatch, loadProduct])
 
 	// Navigation Setup
 	React.useLayoutEffect(() => {
@@ -50,9 +79,40 @@ const ProductOverviewScreen = ({ navigation }) => {
 		})
 	}
 
+	// if (isLoading) {
+	// 	return (
+	// 		<View style={styles.centered}>
+	// 			<ActivityIndicator size="large" color={Color.primary} />
+	// 		</View>
+	// 	)
+	// }
+
+	if (isError) {
+		return (
+			<View style={styles.centered}>
+				<Text> Something Wrong Bro </Text>
+				<Button title="Try Again" onPress={loadProduct} color={Color.primary} />
+			</View>
+		)
+	}
+
+	if (!isLoading && products.length === 0) {
+		return (
+			<View style={styles.centered}>
+				<Text> No Products Found. </Text>
+			</View>
+		)
+	}
+
 	return (
 		<FlatList
 			data={products}
+			refreshControl={
+				<RefreshControl
+					refreshing={isLoading}
+					onRefresh={loadProduct}
+				></RefreshControl>
+			}
 			renderItem={({ item }) => (
 				<ProductItem product={item} onSelect={() => onViewDetail(item)}>
 					<Button
@@ -73,5 +133,13 @@ const ProductOverviewScreen = ({ navigation }) => {
 		/>
 	)
 }
+
+const styles = StyleSheet.create({
+	centered: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+})
 
 export default ProductOverviewScreen
