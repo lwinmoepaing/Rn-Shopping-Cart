@@ -43,32 +43,39 @@ export const setProduct = () => {
 
 export const createProduct = (title, description, imageUrl, price) => {
 	return async (dispatch) => {
-		const res = await fetch(`${URL}/products.json`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				title,
-				description,
-				imageUrl,
-				price,
-			}),
-		})
+		try {
+			const response = await fetch(`${URL}/products.json`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					title,
+					description,
+					imageUrl,
+					price,
+				}),
+			})
 
-		const resData = await res.json()
-		console.log(resData)
+			if (!response.ok) {
+				throw new Error('Something went Wrong')
+			}
 
-		dispatch({
-			type: CREATE_PRODUCT,
-			productData: {
-				id: resData.name,
-				title,
-				description,
-				imageUrl,
-				price,
-			},
-		})
+			const resData = await response.json()
+
+			dispatch({
+				type: CREATE_PRODUCT,
+				productData: {
+					id: resData.name,
+					title,
+					description,
+					imageUrl,
+					price,
+				},
+			})
+		} catch (e) {
+			throw e
+		}
 	}
 }
 
@@ -81,22 +88,26 @@ export const updateProduct = (id, title, description, imageUrl) => {
 		}
 
 		try {
-			await fetch(`${URL}/products/${id}.json`, {
+			const response = await fetch(`${URL}/products/${id}.json`, {
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify(body),
 			})
-		} catch (e) {
-			console.error(e)
-		}
 
-		dispatch({
-			type: UPDATE_PRODUCT,
-			pid: id,
-			productData: body,
-		})
+			if (!response.ok) {
+				throw new Error('Something went wrong')
+			}
+
+			dispatch({
+				type: UPDATE_PRODUCT,
+				pid: id,
+				productData: body,
+			})
+		} catch (e) {
+			throw e
+		}
 	}
 }
 
