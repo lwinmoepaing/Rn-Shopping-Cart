@@ -139,8 +139,8 @@ const EditProductScreen = ({ navigation, route }) => {
 	}, [navigation, productId, dispatch, formState])
 
 	return (
-		<ScrollView>
-			<KeyboardAvoidingView style={styles.form}>
+		<KeyboardAvoidingView style={styles.form}>
+			<ScrollView>
 				<Input
 					label="Title"
 					keyboardType="default"
@@ -199,8 +199,8 @@ const EditProductScreen = ({ navigation, route }) => {
 					numberOfLines={3}
 					required
 				/>
-			</KeyboardAvoidingView>
-		</ScrollView>
+			</ScrollView>
+		</KeyboardAvoidingView>
 	)
 }
 
