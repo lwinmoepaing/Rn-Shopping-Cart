@@ -1,9 +1,13 @@
+import { AsyncStorage } from 'react-native'
 import { errorMessageHandler } from '../../utils/errorHandler'
 
-export const SIGN_UP = 'SIGN_UP'
-export const SIGN_IN = 'SIGN_IN'
+export const AUTHENTICATE = 'AUTHENTICATE'
 
 const url = 'https://identitytoolkit.googleapis.com/v1/accounts'
+
+export const authenticate = (userId, token) => {
+	return { type: AUTHENTICATE, userId, token }
+}
 
 export const signUp = (email, password) => {
 	return async (dispatch) => {
@@ -29,11 +33,13 @@ export const signUp = (email, password) => {
 
 			const resData = await response.json()
 
-			dispatch({
-				type: SIGN_UP,
-				token: resData.idToken,
-				userId: resData.localId,
-			})
+			dispatch(authenticate(resData.localId, resData.idToken))
+
+			const expiredMilliSecond =
+				new Date().getTime() + parseInt(resData.expiresIn) * 1000
+			const expirationDate = new Date(expiredMilliSecond)
+
+			saveDataToStorage(resData.idToken, resData.localId, expirationDate)
 		} catch (e) {
 			throw e
 		}
@@ -64,13 +70,26 @@ export const login = (email, password) => {
 
 			const resData = await response.json()
 
-			dispatch({
-				type: SIGN_IN,
-				token: resData.idToken,
-				userId: resData.localId,
-			})
+			dispatch(authenticate(resData.localId, resData.idToken))
+
+			const expiredMilliSecond =
+				new Date().getTime() + parseInt(resData.expiresIn) * 1000
+			const expirationDate = new Date(expiredMilliSecond)
+
+			saveDataToStorage(resData.idToken, resData.localId, expirationDate)
 		} catch (e) {
 			throw e
 		}
 	}
+}
+
+const saveDataToStorage = (token, userId, expiryDate) => {
+	AsyncStorage.setItem(
+		'userData',
+		JSON.stringify({
+			token,
+			userId,
+			expiryDate,
+		})
+	)
 }

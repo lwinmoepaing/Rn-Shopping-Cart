@@ -4,6 +4,8 @@ import { Provider } from 'react-redux'
 import ReduxThunk from 'redux-thunk'
 import { AppLoading } from 'expo'
 import * as Font from 'expo-font'
+
+// DevTools
 import { composeWithDevTools } from 'redux-devtools-extension'
 
 // Navigatior

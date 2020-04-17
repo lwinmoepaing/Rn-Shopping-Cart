@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Platform } from 'react-native'
 import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
@@ -17,6 +17,7 @@ import OrderScreen from '../screens/shop/OrderScreen'
 import UserProductScreen from '../screens/user/UserProductsScreen'
 import EditProductScreen from '../screens/user/EditProductScreen'
 import AuthScreen from '../screens/user/AuthScreen'
+import StartupScreen from '../screens/StartupScreen'
 
 // Create Navigator
 const Stack = createStackNavigator()
@@ -123,7 +124,12 @@ const AuthNavigator = () => (
 
 // Drawer Navigator
 export default () => {
+	const [isStartup, setIsStartUp] = useState(true)
 	const isAuth = useSelector((state) => state.auth.isAuth)
+
+	if (isStartup) {
+		return <StartupScreen setIsStartUp={setIsStartUp} />
+	}
 
 	return (
 		<NavigationContainer>

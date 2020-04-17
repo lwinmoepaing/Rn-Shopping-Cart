@@ -40,7 +40,7 @@ const UserProductScreen = ({ navigation }) => {
 					<Item
 						title="Menu"
 						onPress={() => navigation.navigate('EditProduct')}
-						iconName={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
+						iconName={Platform.OS === 'android' ? 'md-add' : 'ios-add'}
 					/>
 				</HeaderButtons>
 			),
