@@ -6,10 +6,10 @@ export const SET_ORDER = 'SET_ORDER'
 const URL = 'https://react-native-shop-cart.firebaseio.com/'
 
 export const setOrder = () => {
-	return async (dispatch) => {
+	return async (dispatch, getState) => {
 		try {
-			const user = 'u1'
-			const response = await fetch(`${URL}/orders/${user}.json`)
+			const userId = getState().auth.userId
+			const response = await fetch(`${URL}/orders/${userId}.json`)
 
 			if (!response.ok) {
 				throw new Error('Something went wrong')
@@ -41,21 +41,26 @@ export const setOrder = () => {
 
 // Actions Method
 export const addOrder = (cartItems, totalAmount) => {
-	return async (dispatch) => {
+	return async (dispatch, getState) => {
 		try {
+			const token = getState().auth.token
+			const userId = getState().auth.userId
 			const date = new Date()
 
-			const response = await fetch(`${URL}/orders/u1.json`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					cartItems,
-					totalAmount,
-					date: new Date().toISOString(),
-				}),
-			})
+			const response = await fetch(
+				`${URL}/orders/${userId}.json?auth=${token}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						cartItems,
+						totalAmount,
+						date: new Date().toISOString(),
+					}),
+				}
+			)
 
 			if (!response.ok) {
 				throw new Error('Something Went Wrong')

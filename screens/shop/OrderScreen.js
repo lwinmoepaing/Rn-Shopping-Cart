@@ -6,6 +6,7 @@ import {
 	Platform,
 	StyleSheet,
 	ActivityIndicator,
+	Text,
 } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import Color from '../../constants/Color'
@@ -17,18 +18,20 @@ import * as orderActions from '../../store/action/order'
 
 const OrderScreen = ({ navigation }) => {
 	const [isLoading, setIsLoading] = useState(true)
+	const [isRefresh, setRefresh] = useState(false)
 
 	const dispatch = useDispatch()
 	const orders = useSelector((state) => state.orders.orders)
 
 	const loadData = useCallback(async () => {
-		setIsLoading(true)
+		setRefresh(true)
 		await dispatch(orderActions.setOrder())
-		setIsLoading(false)
+		setRefresh(false)
 	}, [dispatch])
 
 	useEffect(() => {
-		loadData()
+		setIsLoading(true)
+		loadData().then(() => setIsLoading(false))
 	}, [dispatch, loadData])
 
 	React.useLayoutEffect(() => {
@@ -54,10 +57,20 @@ const OrderScreen = ({ navigation }) => {
 		)
 	}
 
+	if (orders.length === 0) {
+		return (
+			<View style={styles.centered}>
+				<Text> No Order Found. </Text>
+			</View>
+		)
+	}
+
 	return (
 		<FlatList
 			data={orders}
 			keyExtractor={(item) => item.id}
+			refreshing={isRefresh}
+			onRefresh={loadData}
 			renderItem={(itemData) => (
 				<OrderItem
 					amount={itemData.item.totalAmount}

@@ -9,8 +9,9 @@ const URL = 'https://react-native-shop-cart.firebaseio.com/'
 
 // Actions Methods
 export const setProduct = () => {
-	return async (dispatch) => {
+	return async (dispatch, getState) => {
 		try {
+			const userId = getState().auth.userId
 			const response = await fetch(`${URL}/products.json`)
 			if (!response.ok) {
 				throw new Error('Something went wrong')
@@ -22,7 +23,7 @@ export const setProduct = () => {
 				products.push(
 					new Product(
 						key,
-						'u1',
+						resData[key].ownerId,
 						resData[key].title,
 						resData[key].imageUrl,
 						resData[key].description,
@@ -33,7 +34,8 @@ export const setProduct = () => {
 
 			dispatch({
 				type: SET_PRODUCT,
-				products,
+				products: products,
+				userProducts: products.filter((prod) => prod.ownerId === userId),
 			})
 		} catch (e) {
 			throw e
@@ -42,9 +44,11 @@ export const setProduct = () => {
 }
 
 export const createProduct = (title, description, imageUrl, price) => {
-	return async (dispatch) => {
+	return async (dispatch, getState) => {
 		try {
-			const response = await fetch(`${URL}/products.json`, {
+			const token = getState().auth.token
+			const userId = getState().auth.userId
+			const response = await fetch(`${URL}/products.json?auth=${token}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -54,6 +58,7 @@ export const createProduct = (title, description, imageUrl, price) => {
 					description,
 					imageUrl,
 					price,
+					ownerId: userId,
 				}),
 			})
 
@@ -71,6 +76,7 @@ export const createProduct = (title, description, imageUrl, price) => {
 					description,
 					imageUrl,
 					price,
+					ownerId: userId,
 				},
 			})
 		} catch (e) {
@@ -80,7 +86,7 @@ export const createProduct = (title, description, imageUrl, price) => {
 }
 
 export const updateProduct = (id, title, description, imageUrl) => {
-	return async (dispatch) => {
+	return async (dispatch, getState) => {
 		const body = {
 			title,
 			description,
@@ -88,7 +94,8 @@ export const updateProduct = (id, title, description, imageUrl) => {
 		}
 
 		try {
-			const response = await fetch(`${URL}/products/${id}.json`, {
+			const token = getState().auth.token
+			const response = await fetch(`${URL}/products/${id}.json?auth=${token}`, {
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json',
@@ -112,9 +119,10 @@ export const updateProduct = (id, title, description, imageUrl) => {
 }
 
 export const deleteProduct = (productId) => {
-	return async (dispatch) => {
+	return async (dispatch, getState) => {
+		const token = getState().auth.token
 		try {
-			await fetch(`${URL}/products/${productId}.json`, {
+			await fetch(`${URL}/products/${productId}.json?auth=${token}`, {
 				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json',
