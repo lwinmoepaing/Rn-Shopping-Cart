@@ -8,6 +8,7 @@ import {
 	StyleSheet,
 	Text,
 	RefreshControl,
+	ActivityIndicator,
 } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
@@ -25,6 +26,7 @@ import * as productActions from '../../store/action/product'
 
 const ProductOverviewScreen = ({ navigation }) => {
 	const [isLoading, setLoading] = useState(true)
+	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [isError, setError] = useState(null)
 
 	const products = useSelector((state) => state.products.availableProducts)
@@ -32,27 +34,26 @@ const ProductOverviewScreen = ({ navigation }) => {
 	const dispatch = useDispatch()
 
 	const loadProduct = useCallback(async () => {
-		setLoading(true)
 		setError(null)
+		setIsRefreshing(true)
 		try {
-			console.log('Loading')
 			await dispatch(productActions.setProduct())
 		} catch (e) {
 			setError(e.message)
 		}
-		setLoading(false)
+		setIsRefreshing(false)
 	}, [dispatch, setLoading, setError])
 
 	// Focus Effect
 	useEffect(() => {
 		const unsubscribe = navigation.addListener('focus', loadProduct)
-		// Return the function to uncsubscribe from the event so it gets removed on unmount
 		return unsubscribe
 	}, [navigation, loadProduct])
 
 	// Initial Fetching
 	useEffect(() => {
-		loadProduct()
+		setLoading(true)
+		loadProduct().then(() => setLoading(false))
 	}, [dispatch, loadProduct])
 
 	// Navigation Setup
@@ -87,19 +88,15 @@ const ProductOverviewScreen = ({ navigation }) => {
 		})
 	}
 
-	// if (isLoading) {
-	// 	return (
-	// 		<View style={styles.centered}>
-	// 			<Text> Loading ... </Text>
-	// 		</View>
-	// 	)
-	// }
-
 	if (isError) {
 		return (
 			<View style={styles.centered}>
 				<Text> Something Wrong Bro </Text>
-				<Button title="Try Again" onPress={loadProduct} color={Color.primary} />
+				<Button
+					title="Try Again"
+					onPress={loadProrduct}
+					color={Color.primary}
+				/>
 			</View>
 		)
 	}
@@ -112,15 +109,19 @@ const ProductOverviewScreen = ({ navigation }) => {
 		)
 	}
 
+	if (isLoading) {
+		return (
+			<View style={styles.centered}>
+				<ActivityIndicator size="large" color={Color.primary} />
+			</View>
+		)
+	}
+
 	return (
 		<FlatList
 			data={products}
-			refreshControl={
-				<RefreshControl
-					refreshing={isLoading}
-					onRefresh={loadProduct}
-				></RefreshControl>
-			}
+			refreshing={isRefreshing}
+			onRefresh={loadProduct}
 			renderItem={({ item }) => (
 				<ProductItem product={item} onSelect={() => onViewDetail(item)}>
 					<Button
