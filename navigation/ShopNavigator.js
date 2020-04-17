@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { Ionicons } from '@expo/vector-icons'
+import { useSelector } from 'react-redux'
 
 // Themes
 import Color from '../constants/Color'
@@ -15,7 +16,9 @@ import CartScreen from '../screens/shop/CartScreen'
 import OrderScreen from '../screens/shop/OrderScreen'
 import UserProductScreen from '../screens/user/UserProductsScreen'
 import EditProductScreen from '../screens/user/EditProductScreen'
+import AuthScreen from '../screens/user/AuthScreen'
 
+// Create Navigator
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
 
@@ -87,25 +90,44 @@ const adminDrawerConfig = {
 	),
 }
 
-// Drawer Navigator
-export default () => (
-	<NavigationContainer>
-		<Drawer.Navigator drawerContentOptions={drawerContentOptions}>
-			<Drawer.Screen
-				name="Product"
-				component={ProductNavigator}
-				options={productDrawerConfig}
-			/>
-			<Drawer.Screen
-				name="Orders"
-				component={OrderNavigator}
-				options={orderDrawerConfig}
-			/>
-			<Drawer.Screen
-				name="Admin"
-				component={AdminNavigator}
-				options={adminDrawerConfig}
-			/>
-		</Drawer.Navigator>
-	</NavigationContainer>
+const DrawerNavigator = () => (
+	<Drawer.Navigator drawerContentOptions={drawerContentOptions}>
+		<Drawer.Screen
+			name="Product"
+			component={ProductNavigator}
+			options={productDrawerConfig}
+		/>
+		<Drawer.Screen
+			name="Orders"
+			component={OrderNavigator}
+			options={orderDrawerConfig}
+		/>
+		<Drawer.Screen
+			name="Admin"
+			component={AdminNavigator}
+			options={adminDrawerConfig}
+		/>
+	</Drawer.Navigator>
 )
+
+// Auth Navigator
+const authScreenOptions = {
+	header: () => null,
+}
+
+const AuthNavigator = () => (
+	<Stack.Navigator screenOptions={authScreenOptions}>
+		<Stack.Screen name="Auth" component={AuthScreen} />
+	</Stack.Navigator>
+)
+
+// Drawer Navigator
+export default () => {
+	const isAuth = useSelector((state) => state.auth.isAuth)
+
+	return (
+		<NavigationContainer>
+			{!isAuth ? <AuthNavigator /> : <DrawerNavigator />}
+		</NavigationContainer>
+	)
+}

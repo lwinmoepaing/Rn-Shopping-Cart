@@ -13,12 +13,14 @@ import ShopNavigator from './navigation/ShopNavigator'
 import productReducer from './store/reducer/product'
 import cartReducer from './store/reducer/cart'
 import orderReducer from './store/reducer/order'
+import authReducer from './store/reducer/auth'
 
 // Redux And Reducer
 const rootReducer = combineReducers({
 	products: productReducer,
 	cart: cartReducer,
 	orders: orderReducer,
+	auth: authReducer,
 })
 
 // For Developing ,

@@ -10,7 +10,6 @@ import {
 	RefreshControl,
 	ActivityIndicator,
 } from 'react-native'
-import { useFocusEffect } from '@react-navigation/native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
 // Theme

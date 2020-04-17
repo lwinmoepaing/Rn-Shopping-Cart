@@ -81,7 +81,7 @@ const EditProductScreen = ({ navigation, route }) => {
 	})
 
 	// Validator
-	const titleChangeHandler = React.useCallback(
+	const inputChangeHandler = React.useCallback(
 		(inputIdentifier, val, isValid) => {
 			dispatchFormState({
 				type: FORM_INPUT_UPDATE,
@@ -180,7 +180,7 @@ const EditProductScreen = ({ navigation, route }) => {
 					errorText="Please enter a valid title"
 					initialValue={formState.inputValues.title}
 					initiallyValid={!!editProduct}
-					onInputChange={titleChangeHandler}
+					onInputChange={inputChangeHandler}
 					required
 				/>
 
@@ -194,7 +194,7 @@ const EditProductScreen = ({ navigation, route }) => {
 					id="imageUrl"
 					initialValue={formState.inputValues.imageUrl}
 					initiallyValid={!!editProduct}
-					onInputChange={titleChangeHandler}
+					onInputChange={inputChangeHandler}
 					required
 				/>
 
@@ -208,7 +208,7 @@ const EditProductScreen = ({ navigation, route }) => {
 						errorText="Please enter a valid price"
 						initialValue={formState.inputValues.price}
 						initiallyValid={!!editProduct}
-						onInputChange={titleChangeHandler}
+						onInputChange={inputChangeHandler}
 						required
 						min={0.1}
 					/>
@@ -223,7 +223,7 @@ const EditProductScreen = ({ navigation, route }) => {
 					errorText="Please enter a valid description"
 					initialValue={formState.inputValues.description}
 					initiallyValid={!!editProduct}
-					onInputChange={titleChangeHandler}
+					onInputChange={inputChangeHandler}
 					multiline
 					numberOfLines={3}
 					required
