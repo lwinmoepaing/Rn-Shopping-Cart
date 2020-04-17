@@ -1,6 +1,13 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { View, Text, FlatList, Button, StyleSheet } from 'react-native'
+import {
+	View,
+	Text,
+	FlatList,
+	Button,
+	ActivityIndicator,
+	StyleSheet,
+} from 'react-native'
 
 // Components
 import Color from '../../constants/Color'
@@ -11,6 +18,9 @@ import * as cartAction from '../../store/action/cart'
 import * as orderAction from '../../store/action/order'
 
 const CartScreen = ({ navigation }) => {
+	// State
+	const [isOrderLoading, setIsOrderLoading] = useState(false)
+
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerTitle: 'Your Cart',
@@ -35,6 +45,13 @@ const CartScreen = ({ navigation }) => {
 		)
 	})
 
+	// Order Click
+	const sendOrderHandler = useCallback(async () => {
+		setIsOrderLoading(true)
+		await dispatch(orderAction.addOrder(cartItems, cartTotalAmount))
+		setIsOrderLoading(false)
+	}, [cartItems, cartTotalAmount])
+
 	return (
 		<View style={styles.screen}>
 			<Card style={styles.summary}>
@@ -44,14 +61,16 @@ const CartScreen = ({ navigation }) => {
 						${Math.round(cartTotalAmount.toFixed(2) * 100) / 100}
 					</Text>
 				</Text>
-				<Button
-					disabled={cartItems.length === 0}
-					color={Color.accent}
-					title="Order Now"
-					onPress={() =>
-						dispatch(orderAction.addOrder(cartItems, cartTotalAmount))
-					}
-				/>
+				{isOrderLoading ? (
+					<ActivityIndicator size="small" color={Color.primary} />
+				) : (
+					<Button
+						disabled={cartItems.length === 0}
+						color={Color.accent}
+						title="Order Now"
+						onPress={sendOrderHandler}
+					/>
+				)}
 			</Card>
 			<FlatList
 				data={cartItems}
@@ -69,7 +88,7 @@ const CartScreen = ({ navigation }) => {
 		</View>
 	)
 }
-// pt-sans
+// Styles
 const styles = StyleSheet.create({
 	screen: {
 		margin: 20,

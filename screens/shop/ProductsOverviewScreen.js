@@ -5,11 +5,11 @@ import {
 	Platform,
 	Button,
 	View,
-	ActivityIndicator,
 	StyleSheet,
 	Text,
 	RefreshControl,
 } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
 // Theme
@@ -35,6 +35,7 @@ const ProductOverviewScreen = ({ navigation }) => {
 		setLoading(true)
 		setError(null)
 		try {
+			console.log('Loading')
 			await dispatch(productActions.setProduct())
 		} catch (e) {
 			setError(e.message)
@@ -42,18 +43,16 @@ const ProductOverviewScreen = ({ navigation }) => {
 		setLoading(false)
 	}, [dispatch, setLoading, setError])
 
-	// WillFocus
+	// Focus Effect
 	useEffect(() => {
-		const willFocus = navigation.addListener('focus', loadProduct)
-		return () => {
-			willFocus.remove()
-		}
+		const unsubscribe = navigation.addListener('focus', loadProduct)
+		// Return the function to uncsubscribe from the event so it gets removed on unmount
+		return unsubscribe
 	}, [navigation, loadProduct])
 
 	// Initial Fetching
 	useEffect(() => {
 		loadProduct()
-		console.log('Loading')
 	}, [dispatch, loadProduct])
 
 	// Navigation Setup
@@ -91,7 +90,7 @@ const ProductOverviewScreen = ({ navigation }) => {
 	// if (isLoading) {
 	// 	return (
 	// 		<View style={styles.centered}>
-	// 			<ActivityIndicator size="large" color={Color.primary} />
+	// 			<Text> Loading ... </Text>
 	// 		</View>
 	// 	)
 	// }
