@@ -2,11 +2,34 @@ import { AsyncStorage } from 'react-native'
 import { errorMessageHandler } from '../../utils/errorHandler'
 
 export const AUTHENTICATE = 'AUTHENTICATE'
+export const LOGOUT = 'LOGOUT'
 
 const url = 'https://identitytoolkit.googleapis.com/v1/accounts'
 
-export const authenticate = (userId, token) => {
-	return { type: AUTHENTICATE, userId, token }
+export const authenticate = (userId, token, expiryTime) => {
+	return (dispatch) => {
+		dispatch(setLogoutTimer(expiryTime))
+		dispatch({ type: AUTHENTICATE, userId, token })
+	}
+}
+
+export const logout = () => {
+	AsyncStorage.removeItem('userData')
+	return { type: LOGOUT }
+}
+
+export const clearLogoutTimer = () => {
+	if (timer) {
+		clearTimeout(timer)
+	}
+}
+
+export const setLogoutTimer = (expirationTimeout) => {
+	return (dispatch) => {
+		timer = setTimeout(() => {
+			dispatch(logout())
+		}, expirationTimeout)
+	}
 }
 
 export const signUp = (email, password) => {
@@ -33,7 +56,13 @@ export const signUp = (email, password) => {
 
 			const resData = await response.json()
 
-			dispatch(authenticate(resData.localId, resData.idToken))
+			dispatch(
+				authenticate(
+					resData.localId,
+					resData.idToken,
+					parseInt(resData.expiresIn) * 1000
+				)
+			)
 
 			const expiredMilliSecond =
 				new Date().getTime() + parseInt(resData.expiresIn) * 1000
@@ -70,7 +99,13 @@ export const login = (email, password) => {
 
 			const resData = await response.json()
 
-			dispatch(authenticate(resData.localId, resData.idToken))
+			dispatch(
+				authenticate(
+					resData.localId,
+					resData.idToken,
+					parseInt(resData.expiresIn) * 1000
+				)
+			)
 
 			const expiredMilliSecond =
 				new Date().getTime() + parseInt(resData.expiresIn) * 1000

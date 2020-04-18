@@ -1,14 +1,28 @@
 import React, { useState } from 'react'
-import { Platform } from 'react-native'
+import {
+	Platform,
+	Text,
+	View,
+	SafeAreaView,
+	Linking,
+	Animated,
+	Easing,
+} from 'react-native'
 import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { createDrawerNavigator } from '@react-navigation/drawer'
+import {
+	createDrawerNavigator,
+	DrawerItemList,
+	DrawerContentScrollView,
+	DrawerItem,
+} from '@react-navigation/drawer'
 import { Ionicons } from '@expo/vector-icons'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 // Themes
 import Color from '../constants/Color'
+
 // Screens
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen'
 import ProductDetailScreen from '../screens/shop/ProductDetailScreen'
@@ -18,6 +32,9 @@ import UserProductScreen from '../screens/user/UserProductsScreen'
 import EditProductScreen from '../screens/user/EditProductScreen'
 import AuthScreen from '../screens/user/AuthScreen'
 import StartupScreen from '../screens/StartupScreen'
+
+// Actions
+import * as authActions from '../store/action/auth'
 
 // Create Navigator
 const Stack = createStackNavigator()
@@ -91,8 +108,36 @@ const adminDrawerConfig = {
 	),
 }
 
+const CustomDrawerContent = (props) => {
+	const dispatch = useDispatch()
+	return (
+		<DrawerContentScrollView {...props}>
+			<DrawerItemList {...props} />
+			<DrawerItem
+				label="Logout"
+				labelStyle={{ color: 'white' }}
+				style={{ backgroundColor: Color.primary }}
+				onPress={() => {
+					authActions.clearLogoutTimer()
+					dispatch(authActions.logout())
+				}}
+				icon={() => (
+					<Ionicons
+						name={Platform.OS === 'android' ? 'md-log-out' : 'ios-log-out'}
+						size={23}
+						color="white"
+					/>
+				)}
+			/>
+		</DrawerContentScrollView>
+	)
+}
+
 const DrawerNavigator = () => (
-	<Drawer.Navigator drawerContentOptions={drawerContentOptions}>
+	<Drawer.Navigator
+		drawerContentOptions={drawerContentOptions}
+		drawerContent={(props) => <CustomDrawerContent {...props} />}
+	>
 		<Drawer.Screen
 			name="Product"
 			component={ProductNavigator}
@@ -118,7 +163,11 @@ const authScreenOptions = {
 
 const AuthNavigator = () => (
 	<Stack.Navigator screenOptions={authScreenOptions}>
-		<Stack.Screen name="Auth" component={AuthScreen} />
+		<Stack.Screen
+			name="Auth"
+			component={AuthScreen}
+			options={{ animationEnabled: false }}
+		/>
 	</Stack.Navigator>
 )
 
@@ -131,9 +180,17 @@ export default () => {
 		return <StartupScreen setIsStartUp={setIsStartUp} />
 	}
 
+	if (!isAuth) {
+		return (
+			<NavigationContainer>
+				<AuthNavigator />
+			</NavigationContainer>
+		)
+	}
+
 	return (
 		<NavigationContainer>
-			{!isAuth ? <AuthNavigator /> : <DrawerNavigator />}
+			<DrawerNavigator />
 		</NavigationContainer>
 	)
 }
